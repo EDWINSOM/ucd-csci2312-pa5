@@ -2,29 +2,32 @@
 // Created by marisa on 12/13/15.
 //
 
+#include <iomanip>
 #include "Game.h"
 #include "Strategic.h"
 #include "Simple.h"
 #include "Food.h"
 #include "Advantage.h"
+#include "Exceptions.h"
 
 using namespace std;
 
 namespace Gaming
 {
 
-    Game::NUM_INIT_AGENT_FACTOR = 4;
-    Game::NUM_INIT_RESOURCE_FACTOR = 2;
-    Game::MIN_WIDTH = 3;
-    Game::MIN_HEIGHT = 3;
-    Game::STARTING_AGENT_ENERGY = 20;
-    Game::STARTING_RESOURCE_CAPACITY = 10;
+    const unsigned int Game::NUM_INIT_AGENT_FACTOR = 4;
+    const unsigned int Game::NUM_INIT_RESOURCE_FACTOR = 2;
+    const unsigned Game::MIN_WIDTH = 3;
+    const unsigned Game::MIN_HEIGHT = 3;
+    const double Game::STARTING_AGENT_ENERGY = 20;
+    const double Game::STARTING_RESOURCE_CAPACITY = 10;
 
 
     Game::Game()
     {
         __width = 3;
         __height = 3;
+        __verbose = true;
 
         populate();
 
@@ -32,38 +35,32 @@ namespace Gaming
 
         __round = 0;
 
-        cout << *this;      // prints out round #, grid/board, and status
-
-        play(__verbose);    // play game until over
-
+        cout << *this;
+        play();
     }
 
     Game::Game(unsigned width, unsigned height, bool manual)
     {
-        __width = width;
-        __height= height;
+        if ((width < MIN_WIDTH) || (height < MIN_HEIGHT))
+        {
+            __width = 3;
+            __height = 3;
+            throw InsufficientDimensionsEx(MIN_WIDTH, MIN_HEIGHT, width, height);
+        }
+
+        else
+        {
+            __width = width;
+            __height = height;
+        }
+
+        __verbose = true;
 
         __status = NOT_STARTED;
 
-        unsigned int x=0 , y=0, z;
+        __grid.reserve(width*height);
 
-        for ( z = 0 ; z < __height ; z++)
-        {
-            y = 0;
 
-            for (int a = 0; a < __width ; a++)
-            {
-                addSimple(x, y);
-                addStrategic(x, ++y);
-                addFood(x,++y);
-                addAdvantage(x,++y);
-            }
-            ++x;
-        }
-
-        cout << *this;      // prints out round #, grid/board, and status
-
-        play(__verbose);    // play game until over
     }
 
 
@@ -85,15 +82,15 @@ namespace Gaming
 
         __verbose = another.__verbose;
 
-        cout << *this;      // prints out round #, grid/board, and status
-
-        play(__verbose);    // play game until over
+        play();
 
     }
 
     Game::~Game()
     {
         __grid.clear();
+        __status = OVER;
+        __verbose = false;
     }
 
 
@@ -111,6 +108,8 @@ namespace Gaming
         // sufficient for our casual purposes
         std::default_random_engine gen;
         std::uniform_int_distribution<int> d(0, __width * __height);
+
+        __grid.reserve(__width*__height);
 
         // populate Strategic agents
         while (numStrategic > 0) {
@@ -161,7 +160,8 @@ namespace Gaming
 
         int i = 0;
 
-        while((result == false) && (i < 9))
+
+        while((result == false) && (i < (__width*__height)))
         {
             if( __grid[i] == nullptr)
             {
@@ -180,7 +180,7 @@ namespace Gaming
 
         int i = 0;
 
-        while ((result == false) && (i < 9) )
+        while ((result == false) && (i < (__width*__height)) )
         {
             if( __grid[i] == nullptr)
             {
@@ -191,6 +191,7 @@ namespace Gaming
             ++i;
         }
 
+        __grid.resize(__grid.size());
         return result;
     }
 
@@ -200,7 +201,7 @@ namespace Gaming
 
         int i = 0;
 
-        while ((result == false) && (i < 9) )
+        while ((result == false) && (i < (__width*__height)) )
         {
             if( __grid[i] == nullptr)
             {
@@ -210,6 +211,7 @@ namespace Gaming
             ++i;
         }
 
+        __grid.resize(__grid.size());
         return result;
     }
 
@@ -219,7 +221,7 @@ namespace Gaming
 
         int i = 0;
 
-        while ((result == false) && (i < 9) )
+        while ((result == false) && (i < (__width*__height)) )
         {
             if( __grid[i] == nullptr)
             {
@@ -230,6 +232,7 @@ namespace Gaming
             ++i;
         }
 
+        __grid.resize(__grid.size());
         return result;
     }
 
@@ -240,7 +243,7 @@ namespace Gaming
 
         int i = 0;
 
-        while ((result == false) && (i < 9) )
+        while ((result == false) && (i < (__width*__height)) )
         {
             if( __grid[i] == nullptr)
             {
@@ -250,6 +253,7 @@ namespace Gaming
             ++i;
         }
 
+        __grid.resize(__grid.size());
         return result;
     }
 
@@ -260,7 +264,7 @@ namespace Gaming
 
         int i = 0;
 
-        while ((result == false) && (i < 9) )
+        while ((result == false) && (i < (__width*__height)) )
         {
             if( __grid[i] == nullptr)
             {
@@ -271,6 +275,7 @@ namespace Gaming
             ++i;
         }
 
+        __grid.resize(__grid.size());
         return result;
     }
 
@@ -280,7 +285,7 @@ namespace Gaming
 
         int i = 0;
 
-        while ((result == false) && (i < 9) )
+        while ((result == false) && (i < (__width*__height)) )
         {
             if( __grid[i] == nullptr)
             {
@@ -290,6 +295,7 @@ namespace Gaming
             ++i;
         }
 
+        __grid.resize(__grid.size());
         return result;
     }
 
@@ -299,7 +305,7 @@ namespace Gaming
 
         int i = 0;
 
-        while ((result == false) && (i < 9) )
+        while ((result == false) && (i < (__width*__height)) )
         {
             if( __grid[i] == nullptr)
             {
@@ -310,6 +316,7 @@ namespace Gaming
             ++i;
         }
 
+        __grid.resize(__grid.size());
         return result;
     }
 
@@ -344,168 +351,425 @@ namespace Gaming
 
     const Surroundings Game::getSurroundings(const Position &pos) const
     {
-        Surroundings * give = new Surroundings<PieceType ,9>;
+        Surroundings * give = new Surroundings;
 
-        (*give).myArray[4] = SELF;
+        (*give).array[4] = SELF;
 
         if ((pos.x == 0) && (pos.y == 0))   // at position (0,0), [0] in __grid
         {
-            (*give).myArray[0] = INACCESSIBLE;
-            (*give).myArray[1] = INACCESSIBLE;
-            (*give).myArray[2] = INACCESSIBLE;
-            (*give).myArray[3] = INACCESSIBLE;
-            (*give).myArray[6] = INACCESSIBLE;
+            (*give).array[0] = INACCESSIBLE;
+            (*give).array[1] = INACCESSIBLE;
+            (*give).array[2] = INACCESSIBLE;
+            (*give).array[3] = INACCESSIBLE;
+            (*give).array[6] = INACCESSIBLE;
 
-            (*give).myArray[5] = __grid[1]->getType();
-            (*give).myArray[7] = __grid[3]->getType();
-            (*give).myArray[8] = __grid[4]->getType();
+            if (__grid[1] == nullptr)
+            {
+                (*give).array[5] = EMPTY;
+            }
+            else
+                (*give).array[5] = __grid[1]->getType();
+
+            if(__grid[3] == nullptr)
+            {
+                (*give).array[7] = EMPTY;
+            }
+            else
+                  (*give).array[7] = __grid[3]->getType();
+
+            if(__grid[4] == nullptr)
+            {
+                (*give).array[8] = EMPTY;
+            }
+            else
+                (*give).array[8] = __grid[4]->getType();
         }
 
         if((pos.x == 0) && (pos.y == 1))  // at position (0,1), [1] in __grid
         {
-            (*give).myArray[0] = INACCESSIBLE;
-            (*give).myArray[1] = INACCESSIBLE;
-            (*give).myArray[2] = INACCESSIBLE;
+            (*give).array[0] = INACCESSIBLE;
+            (*give).array[1] = INACCESSIBLE;
+            (*give).array[2] = INACCESSIBLE;
 
-            (*give).myArray[3] = __grid[0]->getType();
-            (*give).myArray[5] = __grid[2]->getType();
-            (*give).myArray[6] = __grid[3]->getType();
-            (*give).myArray[7] = __grid[4]->getType();
-            (*give).myArray[8] = __grid[5]->getType();
+            if(__grid[0] == nullptr)
+            {
+                (*give).array[3] = EMPTY;
+            }
+            else
+                (*give).array[3] = __grid[0]->getType();
+
+
+            if(__grid[2] == nullptr)
+            {
+                (*give).array[5] = EMPTY;
+            }
+            else
+            (*give).array[5] = __grid[2]->getType();
+
+
+
+            if(__grid[3] == nullptr)
+            {
+                (*give).array[6] = EMPTY;
+            }
+            else
+            (*give).array[6] = __grid[3]->getType();
+
+
+
+            if(__grid[4] == nullptr)
+            {
+                (*give).array[7] = EMPTY;
+            }
+            else
+            (*give).array[7] = __grid[4]->getType();
+
+            if(__grid[5] == nullptr)
+            {
+                (*give).array[8] = EMPTY;
+            }
+            else
+            (*give).array[8] = __grid[5]->getType();
         }
 
         if( (pos.x == 0) && (pos.y == 2))   // at position (0.2), [2] in __grid
         {
-            (*give).myArray[0] = INACCESSIBLE;
-            (*give).myArray[1] = INACCESSIBLE;
-            (*give).myArray[2] = INACCESSIBLE;
-            (*give).myArray[5] = INACCESSIBLE;
-            (*give).myArray[8] = INACCESSIBLE;
+            (*give).array[0] = INACCESSIBLE;
+            (*give).array[1] = INACCESSIBLE;
+            (*give).array[2] = INACCESSIBLE;
+            (*give).array[5] = INACCESSIBLE;
+            (*give).array[8] = INACCESSIBLE;
 
-            (*give).myArray[3] = __grid[1]->getType();
-            (*give).myArray[6] = __grid[4]->getType();
-            (*give).myArray[7] = __grid[5]->getType();
+            if(__grid[1] == nullptr)
+            {
+                (*give).array[3] = EMPTY;
+            }
+            else
+            (*give).array[3] = __grid[1]->getType();
+
+            if(__grid[4] == nullptr)
+            {
+                (*give).array[6] = EMPTY;
+            }
+            else
+            (*give).array[6] = __grid[4]->getType();
+
+
+            if(__grid[5] == nullptr)
+            {
+                (*give).array[7] = EMPTY;
+            }
+            else
+            (*give).array[7] = __grid[5]->getType();
         }
 
         if( (pos.x == 1) && (pos.y == 0))   // at position (1,0), [3] in __grid
         {
-            (*give).myArray[0] = INACCESSIBLE;
-            (*give).myArray[3] = INACCESSIBLE;
-            (*give).myArray[6] = INACCESSIBLE;
+            (*give).array[0] = INACCESSIBLE;
+            (*give).array[3] = INACCESSIBLE;
+            (*give).array[6] = INACCESSIBLE;
 
-            (*give).myArray[1] = __grid[0]->getType();
-            (*give).myArray[2] = __grid[1]->getType();
-            (*give).myArray[5] = __grid[4]->getType();
-            (*give).myArray[7] = __grid[6]->getType();
-            (*give).myArray[8] = __grid[7]->getType();
+            if(__grid[0] == nullptr)
+            {
+                (*give).array[1] = EMPTY;
+            }
+            else
+            (*give).array[1] = __grid[0]->getType();
+
+
+            if(__grid[1] == nullptr)
+            {
+                (*give).array[2] = EMPTY;
+            }
+            else
+            (*give).array[2] = __grid[1]->getType();
+
+            if(__grid[4] == nullptr)
+            {
+                (*give).array[5] = EMPTY;
+            }
+            else
+            (*give).array[5] = __grid[4]->getType();
+
+
+            if(__grid[6] == nullptr)
+            {
+                (*give).array[7] = EMPTY;
+            }
+            else
+            (*give).array[7] = __grid[6]->getType();
+
+
+            if(__grid[7] == nullptr)
+            {
+                (*give).array[8] = EMPTY;
+            }
+            else
+            (*give).array[8] = __grid[7]->getType();
         }
 
         if( (pos.x == 1) && (pos.y == 1))   // at position (1,1), [4] in __grid
         {
-            (*give).myArray[0] = __grid[0]->getType();
-            (*give).myArray[1] = __grid[1]->getType();
-            (*give).myArray[2] = __grid[2]->getType();
-            (*give).myArray[3] = __grid[3]->getType();
-            (*give).myArray[5] = __grid[5]->getType();
-            (*give).myArray[6] = __grid[6]->getType();
-            (*give).myArray[7] = __grid[7]->getType();
-            (*give).myArray[8] = __grid[8]->getType();
+            if(__grid[0] == nullptr)
+            {
+                (*give).array[0] = EMPTY;
+            }
+            else
+            (*give).array[0] = __grid[0]->getType();
+
+            if(__grid[1] == nullptr)
+            {
+                (*give).array[1] = EMPTY;
+            }
+            else
+            (*give).array[1] = __grid[1]->getType();
+
+
+            if(__grid[2] == nullptr)
+            {
+                (*give).array[2] = EMPTY;
+            }
+            else
+            (*give).array[2] = __grid[2]->getType();
+
+
+            if(__grid[3] == nullptr)
+            {
+                (*give).array[3] = EMPTY;
+            }
+            else
+            (*give).array[3] = __grid[3]->getType();
+
+
+            if(__grid[5] == nullptr)
+            {
+                (*give).array[5] = EMPTY;
+            }
+            else
+            (*give).array[5] = __grid[5]->getType();
+
+
+            if(__grid[6] == nullptr)
+            {
+                (*give).array[6] = EMPTY;
+            }
+            else
+            (*give).array[6] = __grid[6]->getType();
+
+
+            if(__grid[7] == nullptr)
+            {
+                (*give).array[7] = EMPTY;
+            }
+            else
+            (*give).array[7] = __grid[7]->getType();
+
+
+            if(__grid[8] == nullptr)
+            {
+                (*give).array[8] = EMPTY;
+            }
+            else
+            (*give).array[8] = __grid[8]->getType();
         }
 
         if( (pos.x == 1) && (pos.y == 2))   // at position (1,2), [5] in __grid
         {
-            (*give).myArray[2] = INACCESSIBLE;
-            (*give).myArray[5] = INACCESSIBLE;
-            (*give).myArray[8] = INACCESSIBLE;
+            (*give).array[2] = INACCESSIBLE;
+            (*give).array[5] = INACCESSIBLE;
+            (*give).array[8] = INACCESSIBLE;
 
-            (*give).myArray[0] = __grid[1]->getType();
-            (*give).myArray[1] = __grid[2]->getType();
-            (*give).myArray[3] = __grid[4]->getType();
-            (*give).myArray[6] = __grid[7]->getType();
-            (*give).myArray[7] = __grid[8]->getType();
+            if(__grid[1] == nullptr)
+            {
+                (*give).array[0] = EMPTY;
+            }
+            else
+            (*give).array[0] = __grid[1]->getType();
+
+            if(__grid[2] == nullptr)
+            {
+                (*give).array[1] = EMPTY;
+            }
+            else
+            (*give).array[1] = __grid[2]->getType();
+
+
+            if(__grid[4] == nullptr)
+            {
+                (*give).array[3] = EMPTY;
+            }
+            else
+            (*give).array[3] = __grid[4]->getType();
+
+
+            if(__grid[7] == nullptr)
+            {
+                (*give).array[6] = EMPTY;
+            }
+            else
+            (*give).array[6] = __grid[7]->getType();
+
+
+            if(__grid[8] == nullptr)
+            {
+                (*give).array[7] = EMPTY;
+            }
+            else
+            (*give).array[7] = __grid[8]->getType();
         }
 
         if( (pos.x == 2) && (pos.y == 0))   // at position (2,0), [6] in __grid
         {
-            (*give).myArray[0] = INACCESSIBLE;
-            (*give).myArray[3] = INACCESSIBLE;
-            (*give).myArray[6] = INACCESSIBLE;
-            (*give).myArray[7] = INACCESSIBLE;
-            (*give).myArray[8] = INACCESSIBLE;
+            (*give).array[0] = INACCESSIBLE;
+            (*give).array[3] = INACCESSIBLE;
+            (*give).array[6] = INACCESSIBLE;
+            (*give).array[7] = INACCESSIBLE;
+            (*give).array[8] = INACCESSIBLE;
 
-            (*give).myArray[1] = __grid[3]->getType();
-            (*give).myArray[2] = __grid[4]->getType();
-            (*give).myArray[5] = __grid[7]->getType();
+            if(__grid[3] == nullptr)
+            {
+                (*give).array[1] = EMPTY;
+            }
+            else
+            (*give).array[1] = __grid[3]->getType();
+
+
+            if(__grid[4] == nullptr)
+            {
+                (*give).array[2] = EMPTY;
+            }
+            else
+            (*give).array[2] = __grid[4]->getType();
+
+            if(__grid[7] == nullptr)
+            {
+                (*give).array[5] = EMPTY;
+            }
+            else
+            (*give).array[5] = __grid[7]->getType();
         }
 
         if( (pos.x == 2) && (pos.y == 1)) // at position (2,1), [7] in __grid
         {
-            (*give).myArray[6] = INACCESSIBLE;
-            (*give).myArray[7] = INACCESSIBLE;
-            (*give).myArray[8] = INACCESSIBLE;
+            (*give).array[6] = INACCESSIBLE;
+            (*give).array[7] = INACCESSIBLE;
+            (*give).array[8] = INACCESSIBLE;
 
-            (*give).myArray[0] = __grid[3]->getType();
-            (*give).myArray[1] = __grid[4]->getType();
-            (*give).myArray[2] = __grid[5]->getType();
-            (*give).myArray[3] = __grid[6]->getType();
-            (*give).myArray[5] = __grid[8]->getType();
+
+            if(__grid[3] == nullptr)
+            {
+                (*give).array[0] = EMPTY;
+            }
+            else
+            (*give).array[0] = __grid[3]->getType();
+
+
+            if(__grid[4] == nullptr)
+            {
+                (*give).array[1] = EMPTY;
+            }
+            else
+            (*give).array[1] = __grid[4]->getType();
+
+            if(__grid[5] == nullptr)
+            {
+                (*give).array[2] = EMPTY;
+            }
+            else
+            (*give).array[2] = __grid[5]->getType();
+
+
+            if(__grid[6] == nullptr)
+            {
+                (*give).array[3] = EMPTY;
+            }
+            else
+            (*give).array[3] = __grid[6]->getType();
+
+
+            if(__grid[8] == nullptr)
+            {
+                (*give).array[5] = EMPTY;
+            }
+            else
+            (*give).array[5] = __grid[8]->getType();
         }
 
         if ( (pos.x == 2) && (pos.y == 2)) // at position (2,2), [8] in __grid
         {
-            (*give).myArray[2] = INACCESSIBLE;
-            (*give).myArray[5] = INACCESSIBLE;
-            (*give).myArray[6] = INACCESSIBLE;
-            (*give).myArray[7] = INACCESSIBLE;
-            (*give).myArray[8] = INACCESSIBLE;
+            (*give).array[2] = INACCESSIBLE;
+            (*give).array[5] = INACCESSIBLE;
+            (*give).array[6] = INACCESSIBLE;
+            (*give).array[7] = INACCESSIBLE;
+            (*give).array[8] = INACCESSIBLE;
 
-            (*give).myArray[0] = __grid[4]->getType();
-            (*give).myArray[1] = __grid[5]->getType();
-            (*give).myArray[3] = __grid[7]->getType();
+
+            if(__grid[4] == nullptr)
+            {
+                (*give).array[0] = EMPTY;
+            }
+            else
+            (*give).array[0] = __grid[4]->getType();
+
+
+            if(__grid[5] == nullptr)
+            {
+                (*give).array[1] = EMPTY;
+            }
+            else
+            (*give).array[1] = __grid[5]->getType();
+
+
+            if(__grid[7] == nullptr)
+            {
+                (*give).array[3] = EMPTY;
+            }
+            else
+            (*give).array[3] = __grid[7]->getType();
         }
 
         return *give;
 
     }
 
-    const ActionType Game::reachSurroundings(const Position &from, const Position &to) {
+    std::ostream &operator<<(std::ostream &os, const Game &game) {
 
-
-
-        return S;
-    }
-
-    std::ostream &Gaming::operator<<(std::ostream &os, const Game &game) {
+        std::string status;
+         if (game.__status == 0)
+         {
+             status = "NOT PLAYING";
+         }
+        else if (game.__status == 1)
+         {
+             status = "PLAYING";
+         }
+         else
+             status = "OVER";
 
         cout << endl << "Round: " << game.__round << endl;
         int m = 0;
-        auto it  = game.__grid.begin();
 
         for (int j = 0; j < game.__height; j++)
         {
             for (int i = 0; i < game.__width; i++)
             {
-                cout << "[";
                 if(game.__grid[m] != nullptr)
                 {
-                    cout << (*(it)[m]) .getType();
+                    cout << "[" << *game.__grid[m] << setw(2) << "]";
                 }
-                cout << "]";
+                else
+                    cout << "[" << setw(6) << "]";
                 m++;
             }
             cout << endl;
         }
 
-        cout << endl << "Status: " << game.__status << endl;
+        cout << "Status: " << status << "...";
+
+        return os;
     }
 
     bool Game::isLegal(const ActionType &ac, const Position &pos) const {
-
-        // game is over
-        if (__status == OVER)
-        {
-            return false;
-        }
 
         if( (pos.x > -1) && (pos.x < 5) )
         {
@@ -515,6 +779,12 @@ namespace Gaming
             }
         }
 
+        // game is over
+        if (__status == OVER)
+        {
+            return false;
+        }
+
 
         return false;
     }
@@ -522,104 +792,302 @@ namespace Gaming
     void Game::play(bool verbose)
     {
         __status = PLAYING;
-        round();
+        bool viable;
+        unsigned counter;
 
+        while (__status != OVER)
+        {
+            counter = 0;
+            ++__round;
+            round();
+            for (int i = 0; i < 9 ; i++)
+            {
+                if (__grid[i] != nullptr)
+                {
+                    viable = __grid[i]->isViable();
 
-        __status = OVER;
+                    if (viable) {
+                        ++counter;
+                        __grid[i]->age();
+                        __grid[i]->setTurned(false);
+
+                        // check if Piece has aged to 0
+                        viable = __grid[i]->isViable();
+                        if (!viable) {
+                            __grid[i] = nullptr;
+                        }
+                    }
+                }
+            }
+
+            if(counter <= 1)
+            {
+                __status = OVER;
+            }
+
+            cout << *this << endl;      // prints out game/ grid
+        }
+
     }
 
     void Game::round()
     {
         Surroundings copy;
         ActionType returned;
-        bool legal = false;
         Position test(1,1);
+        bool legal = false;
+        bool viable1 , viable2;
+        int factor = 0;
+
 
         for (int i = 0 ; i < 9 ; i++)
         {
-            if( (__grid[i]->getType() != INACCESSIBLE) && (__grid[i]->getType() != EMPTY) )
-            {
-                copy = getSurroundings(__grid[i]->getPosition());       // returns a Surroundings
+            if( __grid[i] != nullptr ) {
 
-                if(__grid[i]->getTurned() != true)
-                {
-                    __grid[i]->setTurned(true);
-                    returned = __grid[i]->takeTurn(copy);      // return ActionType
+                    if (__grid[i]->getTurned() != true) {
+                        copy = getSurroundings(__grid[i]->getPosition());       // returns a Surroundings
 
-                    //convert returned value on surroundings to a position on __grid
+                        __grid[i]->setTurned(true);
 
-                    // adding current position by (-1,-1)
-                    if (returned == NW)
-                    {
-                        (*__grid[i])*(*__grid[i-4]);    //interaction
-                        test.x += -1;
-                        test.y += -1;
+                        returned = __grid[i]->takeTurn(copy);      // return ActionType
+
+                        //convert returned value on surroundings to a position on __grid
+
+                        // adding current position by (-1,-1)
+                        if (returned == NW) {
+                            factor = -4;
+                            if (__grid[i - 4] != nullptr)        // is new position is not empty
+                            {
+                                (*__grid[i]) * (*__grid[i - 4]);    //interaction
+
+                                viable1 = (*__grid[i]).isViable();
+                                viable2 = (*__grid[i - 4]).isViable();
+
+                                if (viable1 == false) {
+                                    __grid[i] = nullptr;
+                                }
+                                if (viable2 == false) {
+                                    __grid[i - 4] = nullptr;
+
+                                    test.x += -1;
+                                    test.y += -1;
+                                }
+                            }
+
+                            else {
+                                test.x += -1;
+                                test.y += -1;
+                            }
+
+                        }
+
+                            // adding current position by (-1,0)
+                        else if (returned == N) {
+                            factor = -3;
+                            if (__grid[i - 3] != nullptr)        // is new position is not empty
+                            {
+                                (*__grid[i]) * (*__grid[i - 3]);    //interaction
+
+                                viable1 = (*__grid[i]).isViable();
+                                viable2 = (*__grid[i - 3]).isViable();
+
+                                if (viable1 == false) {
+                                    __grid[i] = nullptr;
+                                }
+                                if (viable2 == false) {
+                                    __grid[i - 3] = nullptr;
+                                    test.x += -1;
+                                }
+                            }
+                            else {
+                                test.x += -1;
+                            }
+
+                        }
+
+                            // adding current position by (-1,1)
+                        else if (returned == NE) {
+                            factor = -2;
+                            if (__grid[i - 2] != nullptr)        // is new position is not empty
+                            {
+                                (*__grid[i]) * (*__grid[i - 2]);    //interaction
+
+                                viable1 = (*__grid[i]).isViable();
+                                viable2 = (*__grid[i - 2]).isViable();
+
+                                if (viable1 == false) {
+                                    __grid[i] = nullptr;
+                                }
+                                if (viable2 == false) {
+                                    __grid[i - 2] = nullptr;
+                                    test.x += -1;
+                                    test.y += 1;
+                                }
+                            }
+                            else {
+                                test.x += -1;
+                                test.y += 1;
+                            }
+
+                        }
+
+                            // adding current position by (0,-1)
+                        else if (returned == W) {
+                            factor = -1;
+                            if (__grid[i - 1] != nullptr)        // is new position is not empty
+                            {
+                                (*__grid[i]) * (*__grid[i - 1]);    //interaction
+
+                                viable1 = (*__grid[i]).isViable();
+                                viable2 = (*__grid[i - 1]).isViable();
+
+                                if (viable1 == false) {
+                                    __grid[i] = nullptr;
+                                }
+                                if (viable2 == false) {
+                                    __grid[i - 1] = nullptr;
+                                    test.y += -1;
+                                }
+                            }
+                            else {
+                                test.y += -1;
+                            }
+
+                        }
+
+                            // adding current position by (0,1)
+                        else if (returned == E) {
+                            factor = 1;
+                            if (__grid[i + 1] != nullptr)        // is new position is not empty
+                            {
+                                (*__grid[i]) * (*__grid[i + 1]);    //interaction
+
+                                viable1 = (*__grid[i]).isViable();
+                                viable2 = (*__grid[i + 1]).isViable();
+
+                                if (viable1 == false) {
+                                    __grid[i] = nullptr;
+                                }
+                                if (viable2 == false) {
+                                    __grid[i + 1] = nullptr;
+                                    test.y += 1;
+                                }
+                            }
+                            else {
+                                test.y += 1;
+                            }
+                        }
+
+                            // adding current position by (1,-1)
+                        else if (returned == SW) {
+                            factor = 2;
+                            if (__grid[i + 2] != nullptr)        // is new position is not empty
+                            {
+                                (*__grid[i]) * (*__grid[i + 2]);    //interaction
+
+                                viable1 = (*__grid[i]).isViable();
+                                viable2 = (*__grid[i + 2]).isViable();
+
+                                if (viable1 == false) {
+                                    __grid[i] = nullptr;
+                                }
+                                if (viable2 == false) {
+                                    __grid[i + 2] = nullptr;
+                                    test.x += 1;
+                                    test.y += -1;
+                                }
+                            }
+                            else {
+                                test.x += 1;
+                                test.y += -1;
+                            }
+                        }
+
+                            // adding current position by (1,0)
+                        else if (returned == S) {
+                            factor = 3;
+                            if (__grid[i + 3] != nullptr)        // is new position is not empty
+                            {
+                                (*__grid[i]) * (*__grid[i + 3]);    //interaction
+
+                                viable1 = (*__grid[i]).isViable();
+                                viable2 = (*__grid[i + 3]).isViable();
+
+                                if (viable1 == false) {
+                                    __grid[i] = nullptr;
+                                }
+                                if (viable2 == false) {
+                                    __grid[i + 3] = nullptr;
+                                    test.x += 1;
+                                }
+                            }
+                            else {
+                                test.x += 1;
+                            }
+                        }
+
+                            // adding current position by (1,1)
+                        else if (returned == SE) {
+                            factor = 4;
+                            if (__grid[i + 4] != nullptr)        // is new position is not empty
+                            {
+                                (*__grid[i]) * (*__grid[i + 4]);    //interaction
+
+                                viable1 = (*__grid[i]).isViable();
+                                viable2 = (*__grid[i + 4]).isViable();
+
+                                if (viable1 == false) {
+                                    __grid[i] = nullptr;
+                                }
+                                if (viable2 == false) {
+                                    __grid[i + 4] = nullptr;
+                                    test.x += 1;
+                                    test.y += 1;
+                                }
+                            }
+                            else {
+                                test.x += 1;
+                                test.y += 1;
+                            }
+                        }
+
+                        test = move(test, returned);
+
+                        legal = isLegal(returned, test);
+
+                        if (legal) {
+                            if (__grid[i] != nullptr) {
+                                __grid[i]->setPosition(test);       // send in accepted position
+                                __grid[i + factor] = __grid[i];
+                                __grid[i] = nullptr;
+                            }
+                        }
+
                     }
 
-                    // adding current position by (-1,0)
-                    else if (returned == N)
-                    {
-                        (*__grid[i])*(*__grid[i-3]);    //interaction
-                        test.x += -1;
-                    }
-
-                    // adding current position by (-1,1)
-                    else if (returned == NE)
-                    {
-                        (*__grid[i])*(*__grid[i-2]);    //interaction
-                        test.x += -1;
-                        test.y += 1;
-                    }
-
-                    // adding current position by (0,-1)
-                    else if (returned == W)
-                    {
-                        (*__grid[i])*(*__grid[i-1]);    //interaction
-                        test.y += -1;
-                    }
-
-                    // adding current position by (0,1)
-                    else if (returned == E)
-                    {
-                        (*__grid[i])*(*__grid[i+1]);    //interaction
-                        test.y += 1;
-                    }
-
-                    // adding current position by (1,-1)
-                    else if (returned == SW)
-                    {
-                        (*__grid[i])*(*__grid[i+2]);    //interaction
-                        test.x += 1;
-                        test.y += -1;
-                    }
-
-                    // adding current position by (1,0)
-                    else if (returned == S)
-                    {
-                        (*__grid[i])*(*__grid[i+3]);    //interaction
-                        test.x += 1;
-                    }
-
-                    // adding current position by (1,1)
-                    else if (returned == SE)
-                    {
-                        (*__grid[i])*(*__grid[i+4]);    //interaction
-                        test.x += 1;
-                        test.y += 1;
-                    }
-
-                    legal = isLegal(returned,test);
-
-                    if( legal)
-                    {
-                        __grid[i]->setPosition(test);       // send in accepted position
-                    }
-
-
-
-                }
             }
 
         }
+
+    }
+
+    const Position Game::move(const Position &pos, const ActionType &ac) const {
+
+        bool legal = false;
+
+        legal = isLegal(ac,pos);
+
+
+        if( legal)
+        {
+           return pos;
+        }
+
+        else
+            return Position(0,0);
+    }
+
+    const ActionType Game::reachSurroundings(const Position &from, const Position &to) {
+        return STAY;
     }
 }

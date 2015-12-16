@@ -26,6 +26,7 @@ namespace Gaming {
     protected:
         const Game &__game; // note: a reference to the Game object
         unsigned int __id;
+        static unsigned int idGen();
 
         virtual void print(std::ostream &os) const = 0;
 
@@ -58,3 +59,4 @@ namespace Gaming {
 
 
 #endif //PA5GAME_GAMEUNIT_H
+

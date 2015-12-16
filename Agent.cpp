@@ -3,9 +3,75 @@
 //
 
 #include "Agent.h"
+#include "Resource.h"
 
 namespace Gaming
 {
-    Agent::AGENT_FATIGUE_RATE = 0.3;
+    const double Agent::AGENT_FATIGUE_RATE = 0.3;
 
+    Agent::Agent(const Game &g, const Position &p, double energy): Piece(g,p) {
+
+        __energy = energy;
+
+    }
+
+    Piece &Agent::operator*(Piece &other) {
+
+
+
+            if ((other.getType() == SIMPLE) || (other.getType() == STRATEGIC)) {
+                return other.interact(this);
+            }
+
+            else if ((other.getType() == FOOD) || (other.getType() == ADVANTAGE)) {
+                return (other.interact(this));
+            }
+
+            else
+                return *this;
+
+
+
+    }
+
+    Piece &Agent::interact(Agent *agent) {
+
+        // Agents compete and might either both die, or one dies and the other wins.
+
+        // Both Agents Die
+        if (__energy == agent->__energy)
+        {
+            finish();
+            agent->finish();
+        }
+
+        // 1st agent wins
+        else if (__energy > agent->__energy)
+        {
+            __energy -= agent->__energy;
+            agent->finish();
+        }
+
+        else if (__energy < agent->__energy)
+        {
+            agent->__energy -= __energy;
+            finish();
+        }
+
+        return *this;
+    }
+
+    Piece &Agent::interact(Resource *resource) {
+
+        // call Resource consume (), return Agent?
+        addEnergy(resource->consume());
+
+        return *this;
+    }
+
+    void Agent::age() {
+
+        __energy -= AGENT_FATIGUE_RATE;
+
+    }
 }

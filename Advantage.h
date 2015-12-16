@@ -17,7 +17,7 @@ namespace Gaming {
         static const double ADVANTAGE_MULT_FACTOR;
 
         Advantage(const Game &g, const Position &p, double capacity);
-        ~Advantage();
+        ~Advantage(){};
 
         PieceType getType() const override { return PieceType::ADVANTAGE; }
 
@@ -32,3 +32,4 @@ namespace Gaming {
 
 
 #endif //PA5GAME_WEAPON_H
+

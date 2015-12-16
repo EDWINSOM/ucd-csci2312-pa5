@@ -40,6 +40,7 @@ namespace Gaming {
 
         Status __status;
 
+        // flag to the Game whether to print itself every round or not
         bool __verbose;
 
     public:
@@ -56,7 +57,7 @@ namespace Gaming {
         // getters
         unsigned int getWidth() const { return __width; }
         unsigned int getHeight() const { return __height; }
-        unsigned int getNumPieces() const { return __numInitAgents+__numInitResources; };
+        unsigned int getNumPieces() const { return static_cast<unsigned int>(__grid.size()); };
         unsigned int getNumAgents() const { return __numInitAgents; };
         unsigned int getNumSimple() const;
         unsigned int getNumStrategic() const;
@@ -109,3 +110,4 @@ namespace Gaming {
 
 
 #endif //PA5GAME_GAME_H
+

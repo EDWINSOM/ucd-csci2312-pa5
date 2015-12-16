@@ -4,21 +4,21 @@
 
 #include "Simple.h"
 
+using namespace std;
+
 namespace Gaming
 {
-    Simple::SIMPLE_ID = 'S';
+    const char Simple::SIMPLE_ID = 'S';
 
     ActionType Simple::takeTurn(const Surroundings &s) const {
 
 
-        for (int i = 0; i < 9 ; i++)
-        {
+      for (int i = 0; i < 9; i++) {
             if (i == 4)
                 ++i;
 
-            if ( (s.myArray[i] == FOOD) | (s.myArray[i] == ADVANTAGE) )
-            {
-                if( i == 0)
+            if ((s.array[i] == FOOD) | (s.array[i] == ADVANTAGE)) {
+                if (i == 0)
                     return NW;
 
                 else if (i == 1)
@@ -45,14 +45,12 @@ namespace Gaming
 
         }
 
-        for (int j = 0 ; j < 9 ; j++)
-        {
+        for (int j = 0; j < 9; j++) {
             if (j == 4)
                 ++j;
 
-            if ( s.myArray[j] == EMPTY)
-            {
-                if( j == 0)
+            if (s.array[j] == EMPTY) {
+                if (j == 0)
                     return NW;
 
                 else if (j == 1)
@@ -79,5 +77,18 @@ namespace Gaming
         }
 
         return STAY;
+    }
+
+    Simple::Simple(const Game &g, const Position &p, double energy): Agent(g,p,energy) {
+
+        __energy = energy;
+        __id = idGen();
+        return ;
+    }
+
+    void Simple::print(std::ostream &os) const {
+
+        cout << SIMPLE_ID << __id  ;
+
     }
 }

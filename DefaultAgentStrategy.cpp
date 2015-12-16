@@ -3,3 +3,8 @@
 //
 
 #include "DefaultAgentStrategy.h"
+
+namespace Gaming
+{
+
+}

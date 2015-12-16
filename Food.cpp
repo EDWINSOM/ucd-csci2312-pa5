@@ -4,7 +4,22 @@
 
 #include "Food.h"
 
+using namespace std;
+
 namespace Gaming
 {
-    Food::FOOD_ID = 'F';
+    const char Food::FOOD_ID = 'F';
+
+    Food::Food(const Game &g, const Position &p, double capacity): Resource(g,p,capacity) {
+
+        __capacity = capacity;
+        __id = idGen();
+        return;
+    }
+
+    void Food::print(std::ostream &os) const {
+
+        cout <<  FOOD_ID << __id;
+
+    }
 }

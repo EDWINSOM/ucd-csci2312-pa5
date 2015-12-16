@@ -29,7 +29,7 @@ namespace Gaming {
         // [0][1][2]
         // [3][4][5]
         // [6][7][8]
-        std::array<PieceType, 9> myArray;
+        std::array<PieceType, 9> array;
     };
 
     class PositionRandomizer {
@@ -54,3 +54,4 @@ namespace Gaming {
 }
 
 #endif // PA5GAME_GAMING_H
+

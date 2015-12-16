@@ -3,3 +3,9 @@
 //
 
 #include "Strategy.h"
+
+namespace Gaming
+{
+
+}
+

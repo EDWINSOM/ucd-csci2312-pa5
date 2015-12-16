@@ -13,10 +13,11 @@ namespace Gaming {
     public:
         Strategy() {}
         virtual ~Strategy() {};
-        virtual ActionType operator()(const Surroundings &s) const = 0;
+     //   virtual ActionType operator()(const Surroundings &s) const = 0;
     };
 
 }
 
 
 #endif //PA5GAME_STRATEGY_H
+

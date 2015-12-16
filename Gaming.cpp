@@ -3,3 +3,8 @@
 //
 
 #include "Gaming.h"
+
+namespace Gaming {
+
+}
+
