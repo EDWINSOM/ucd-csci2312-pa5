@@ -31,7 +31,7 @@ namespace Gaming {
 
         void populate(); // populate the grid (used in automatic random initialization of a Game)
 
-        unsigned __numInitAgents, __numInitResources;
+        unsigned __numInitAgents=0, __numInitResources=0;
 
         unsigned __width, __height;
         std::vector<Piece *> __grid; // if a position is empty, nullptr
@@ -42,6 +42,8 @@ namespace Gaming {
 
         // flag to the Game whether to print itself every round or not
         bool __verbose;
+
+
 
     public:
         static const unsigned MIN_WIDTH, MIN_HEIGHT;
@@ -57,11 +59,11 @@ namespace Gaming {
         // getters
         unsigned int getWidth() const { return __width; }
         unsigned int getHeight() const { return __height; }
-        unsigned int getNumPieces() const { return static_cast<unsigned int>(__grid.size()); };
-        unsigned int getNumAgents() const { return __numInitAgents; };
+        unsigned int getNumPieces() const;
+        unsigned int getNumAgents() const;
         unsigned int getNumSimple() const;
         unsigned int getNumStrategic() const;
-        unsigned int getNumResources() { return __numInitResources; };
+        unsigned int getNumResources() const;
         Status getStatus() const { return __status; }
         unsigned int getRound() const { return __round; }
 

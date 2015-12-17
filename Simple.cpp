@@ -88,7 +88,23 @@ namespace Gaming
 
     void Simple::print(std::ostream &os) const {
 
-        cout << SIMPLE_ID << __id  ;
+        if (__id < 10)
+        {
+            os << SIMPLE_ID << __id << "   ";
+            return;
+        }
+        if (__id < 100)
+        {
+            os << SIMPLE_ID << __id << "  ";
+            return;
+        }
+        else if (__id < 1000)
+        {
+            os << SIMPLE_ID << __id << " ";
+            return;
+        }
+
+        return;
 
     }
 }

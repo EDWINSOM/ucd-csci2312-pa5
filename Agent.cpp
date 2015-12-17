@@ -4,6 +4,11 @@
 
 #include "Agent.h"
 #include "Resource.h"
+#include "Simple.h"
+#include "Strategic.h"
+#include "Food.h"
+#include "Advantage.h"
+#include <vector>
 
 namespace Gaming
 {
@@ -17,8 +22,22 @@ namespace Gaming
 
     Piece &Agent::operator*(Piece &other) {
 
+        bool valid = false;
 
+        Piece *agent = dynamic_cast<Agent *>(&other);
+        if (agent)
+        {
+            valid = true;
+        }
 
+        Piece *resource = dynamic_cast<Resource *>(&other);
+        if (resource)
+        {
+            valid = true;
+        }
+
+        if (valid)
+        {
             if ((other.getType() == SIMPLE) || (other.getType() == STRATEGIC)) {
                 return other.interact(this);
             }
@@ -26,11 +45,11 @@ namespace Gaming
             else if ((other.getType() == FOOD) || (other.getType() == ADVANTAGE)) {
                 return (other.interact(this));
             }
+        }
+
 
             else
                 return *this;
-
-
 
     }
 

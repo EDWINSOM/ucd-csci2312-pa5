@@ -19,7 +19,23 @@ namespace Gaming
 
     void Food::print(std::ostream &os) const {
 
-        cout <<  FOOD_ID << __id;
+        if (__id < 10)
+        {
+            os <<FOOD_ID << __id << "   ";
+            return;
+        }
+        if (__id < 100)
+        {
+            os << FOOD_ID << __id << "  ";
+            return;
+        }
+        else if (__id < 1000)
+        {
+            os << FOOD_ID << __id << " ";
+            return;
+        }
+
+        return;
 
     }
 }

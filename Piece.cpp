@@ -9,7 +9,7 @@ using namespace std;
 
 namespace Gaming {
 
-    unsigned int Piece::__idGen = 100;
+    unsigned int Piece::__idGen = 0;
 
     Piece::Piece(const Gaming::Game &g, const Gaming::Position &p) : __game(g) {
 
@@ -37,5 +37,7 @@ namespace Gaming {
     unsigned int Piece::idGen() {
         return ++__idGen;
     }
+
+
 }
 

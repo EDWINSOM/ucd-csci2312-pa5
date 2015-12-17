@@ -23,7 +23,23 @@ namespace Gaming {
 
     void Advantage::print(std::ostream &os) const {
 
-        cout << ADVANTAGE_ID << __id;
+        if (__id < 10)
+        {
+            os <<ADVANTAGE_ID << __id << "   ";
+            return;
+        }
+        if (__id < 100)
+        {
+            os << ADVANTAGE_ID << __id << "  ";
+            return;
+        }
+        else if (__id < 1000)
+        {
+            os << ADVANTAGE_ID << __id << " ";
+            return;
+        }
+
+        return;
 
     }
 

@@ -54,6 +54,8 @@ namespace Gaming {
         virtual Piece &interact(Resource *) = 0;
 
         friend std::ostream &operator<<(std::ostream &os, const Piece &piece);
+
+
     };
 }
 
